@@ -3,7 +3,7 @@
 
   var JSONP = function(url, callback) {
     // by default we will query for starcraft
-    url = url || 'https://api.twitch.tv/kraken/search/streams?q=starcraft&limit=5&offset=0&callback=window.responseReceived';
+    url = url || 'https://api.twitch.tv/kraken/search/streams?q=starcraft&limit=6&offset=0&callback=responseReceived';
     callback = callback || function(){};
 
     // generating id for callback
@@ -23,7 +23,7 @@
     var jsonpScript = document.createElement('script');
     jsonpScript.setAttribute("src", url+'callback'+'='+generatedFunction);
     document.getElementsByTagName("head")[0].appendChild(jsonpScript);
-  }
+  };
 
   window.JSONP = JSONP;
   
