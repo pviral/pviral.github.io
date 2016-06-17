@@ -1,5 +1,3 @@
-// API to call
-// https://api.twitch.tv/kraken/search/streams?q=starcraft
 (function init(window, undefined) {
 	"use strict";
 
@@ -9,6 +7,8 @@
 	//we can use css type syntax to get dom elem
 	var searchBtn = document.querySelector('.searchBox > .searchBtn');
 	var inputElem = document.querySelector('.searchBox > input');
+	var nextPage = document.getElementsByClassName("pagination-next")[0];
+	var previousPage = document.getElementsByClassName("pagination-previous")[0];
 
 	attachEventHanlder();
 
@@ -34,6 +34,8 @@
 	function attachEventHanlder() {
 		searchBtn.addEventListener('click', getTwitchStream, false);
 		inputElem.addEventListener('keyup', toggleSearchBtn, false);
+		nextPage.addEventListener('click', updatePage, false);
+		previousPage.addEventListener('click', updatePage, false);
 	}
 
 	/**
@@ -71,17 +73,29 @@
 		if(queryStr) {
 			var url = baseURL+'q='+queryStr+'&limit=6&offset=0'
 		}
-		window.location.hash = 'q='+queryStr+'&limit=6&offset=0';
 
 		window.JSONP(url, responseReceived);
 	}
 
-	function handleLocationChange() {
-		console.log(location.hash);
+	/**
+	 * updatepage when user click pagination
+	 *
+	 * @method  updatePage
+	 */
+	function updatePage() {
+		if(this.dataset.url) {
+			window.JSONP(this.dataset.url, responseReceived);
+		}
+		else if(this.dataset['prevUrl']){
+			window.JSONP(this.dataset.prevUrl, responseReceived);
+		}
+		else {
+			return null;
+		}
 	}
-	window.addEventListener("hashchange", handleLocationChange, true);
 
 	// default we will call with starcraft query
 	// when page loads first time
 	window.JSONP(undefined, responseReceived);
+	
 })(window);

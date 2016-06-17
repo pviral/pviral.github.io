@@ -2,6 +2,8 @@
 	"use strict";
 
 	const LIMIT = 6;
+	var nextPage = document.getElementsByClassName("pagination-next")[0];
+	var previousPage = document.getElementsByClassName("pagination-previous")[0];
 
 	var updateList = function(response) {
 
@@ -13,10 +15,27 @@
 		// update the summary section
 		var resultCount = document.getElementsByClassName("totalResultCount")[0];
 		var paginationPages = document.getElementsByClassName("paginationPages")[0];
+		var currOffset = parseInt(response._links.next.split("&")[1].slice(7));
+		var currentPage = (currOffset <= 6)? 1 : ((currOffset/LIMIT));
 
 		resultCount.textContent = response._total;
-		paginationPages.textContent = 1+"/"+Math.ceil(response._total/LIMIT);
+		paginationPages.textContent = currentPage+"/"+Math.ceil(response._total/LIMIT);
 
+		// if we reach first or last page
+		// disable pagination for prev and next resp
+		if(response._links.prev) {
+			previousPage.dataset['prevUrl'] = response._links.prev;
+		}
+		else if(previousPage.dataset['prevUrl']) {
+			delete previousPage.dataset.prevUrl
+		}
+
+		if(currOffset < response._total) {
+			nextPage.dataset['url'] = response._links.next;
+		}
+		else if(nextPage.dataset['url']) {
+			delete nextPage.dataset['url'];
+		}
 
 		//update list section
 		var streamList = response.streams;
@@ -47,6 +66,7 @@
 			streamDescriptionSpan.setAttribute('class', 'streamDescription');
 
 			titleH1.textContent = i.game;
+			titleH1.setAttribute('title', i.game);
 			gameInfoP.textContent = i.game + " - " + i.viewers + " viewers";
 			streamDescriptionSpan.textContent = i.channel.status;
 

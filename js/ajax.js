@@ -23,7 +23,7 @@
     var jsonpScript = document.createElement('script');
     jsonpScript.setAttribute("src", url+'callback'+'='+generatedFunction);
     document.getElementsByTagName("head")[0].appendChild(jsonpScript);
-  };
+  }
 
   window.JSONP = JSONP;
   
